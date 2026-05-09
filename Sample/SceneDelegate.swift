@@ -82,9 +82,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         if let info = prefill ?? currentFinancialInfo {
             vc.viewModel.prefill(with: info)
-            vc.viewModel.annualIncomeText = String(format: "%.0f", info.annualIncome)
-            vc.viewModel.loanAmountText   = String(format: "%.0f", info.loanAmount)
-            vc.viewModel.irdNumber        = info.irdNumber
         }
 
         vc.onNext = { [weak self] financial in
