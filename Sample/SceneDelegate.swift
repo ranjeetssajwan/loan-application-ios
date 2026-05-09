@@ -1,11 +1,8 @@
 
 //
 //  SceneDelegate.swift
-//  Sample
-//
-//  Bootstraps the app and coordinates navigation across all three loan screens.
-//  New flow: ReviewVC (empty landing) → PersonalInfoVC → FinancialInfoVC → ReviewVC (populated)
-//
+//  LoanApp
+
 
 import UIKit
 
@@ -13,15 +10,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
-    // MARK: - Coordinator state (held here so it survives the whole session)
+ 
 
     private var navigationController: UINavigationController!
 
-    // Transient data carried between screens
+ 
     private var currentPersonalInfo:  PersonalInfo?
     private var currentFinancialInfo: FinancialInfo?
 
-    // MARK: - Scene lifecycle
+ 
 
     func scene(_ scene: UIScene,
                willConnectTo session: UISceneSession,
@@ -40,7 +37,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         UIView.animate(withDuration: 0.35) { win.alpha = 1 }
     }
 
-    // MARK: - Flow builder
+  
 
     private func buildFlow() {
         let reviewVC = makeEmptyReviewVC()
@@ -49,7 +46,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.rootViewController = navigationController
     }
 
-    // MARK: - Empty Review (landing screen)
+ 
 
     private func makeEmptyReviewVC() -> ReviewViewController {
         let vc = ReviewViewController()   // empty / entry state

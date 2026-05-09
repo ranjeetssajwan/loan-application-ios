@@ -1,6 +1,6 @@
 //
 //  AppDelegate.swift
-//  Sample
+//  LoanApp
 //
 //  Created by MOBILE on 05/05/26.
 //
