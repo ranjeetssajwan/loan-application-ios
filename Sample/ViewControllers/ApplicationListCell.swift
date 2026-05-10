@@ -78,7 +78,6 @@ final class ApplicationListCell: UITableViewCell {
         chevron.translatesAutoresizingMaskIntoConstraints = false
         chevron.widthAnchor.constraint(equalToConstant: 12).isActive = true
 
-        // ── Text column ────────────────────────────────────────────────────
         
         let loanTag = AppUI.label(text: "Loan", font: .systemFont(ofSize: 10, weight: .medium),
                                   color: AppColor.textMuted)
@@ -131,7 +130,7 @@ final class ApplicationListCell: UITableViewCell {
         nameLabel.text   = data.applicantName
         amountLabel.text = data.loanAmount
         incomeLabel.text = data.annualIncome
-        dateLabel.text   = "📅 " + data.submittedDate
+        dateLabel.text   = data.submittedDate
         initials.text    = makeInitials(data.applicantName)
 
         if data.isEligible {

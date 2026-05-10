@@ -44,7 +44,7 @@ final class FinancialInfoViewModel {
         if trimmed.isEmpty  { return "Desired loan amount is required." }
         if loanAmount <= 0  { return "Please enter a valid loan amount." }
         if annualIncome > 0 && loanAmount > annualIncome * 0.5 {
-            let max = formatCurrency(annualIncome * 0.5)
+            let max = CurrencyFormatter.nzd(annualIncome * 0.5)
             return "Loan cannot exceed 50% of income (\(max))."
         }
         return nil
@@ -147,14 +147,6 @@ final class FinancialInfoViewModel {
         )
     }
 
-    // MARK: - Helpers
-
-    private func formatCurrency(_ value: Double) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.maximumFractionDigits = 0
-        return formatter.string(from: NSNumber(value: value)) ?? "$\(Int(value))"
-    }
 
  
 

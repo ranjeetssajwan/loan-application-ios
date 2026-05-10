@@ -105,7 +105,7 @@ final class ApplicationsListViewController: UIViewController {
             emptyView.widthAnchor.constraint(equalToConstant: 260)
         ])
 
-        let iconLbl = AppUI.label(text: "📂", font: .systemFont(ofSize: 52))
+        let iconLbl = AppUI.label(text: "", font: .systemFont(ofSize: 52))
         iconLbl.textAlignment = .center
 
         let titleLbl = AppUI.label(

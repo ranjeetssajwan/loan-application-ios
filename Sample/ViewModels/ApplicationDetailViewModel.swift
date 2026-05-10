@@ -4,8 +4,7 @@
 //  LoanApp
 //
 //  ViewModel for the Application Detail screen.
-//  Maps a LoanApplication domain struct into display-ready rows for each section.
-//
+
 
 import UIKit
 
@@ -45,9 +44,9 @@ final class ApplicationDetailViewModel {
 
     var financialRows: [DetailRow] {
         [
-            DetailRow(label: "Annual Income",  value: formatCurrency(application.financial.annualIncome)),
-            DetailRow(label: "Loan Amount",    value: formatCurrency(application.financial.loanAmount)),
-            DetailRow(label: "Max Eligible",   value: formatCurrency(application.financial.annualIncome * 0.5)),
+            DetailRow(label: "Annual Income",  value: CurrencyFormatter.nzd(application.financial.annualIncome)),
+            DetailRow(label: "Loan Amount",    value: CurrencyFormatter.nzd(application.financial.loanAmount)),
+            DetailRow(label: "Max Eligible",   value: CurrencyFormatter.nzd(application.financial.annualIncome * 0.5)),
             DetailRow(label: "Loan / Income",  value: String(format: "%.1f%%", application.loanToIncomeRatio * 100)),
             DetailRow(label: "IRD Number",     value: maskedIRD(application.financial.irdNumber)),
             DetailRow(label: "Eligibility",    value: eligibilityText,
@@ -84,12 +83,6 @@ final class ApplicationDetailViewModel {
 
  
 
-    private func formatCurrency(_ value: Double) -> String {
-        let f = NumberFormatter()
-        f.numberStyle           = .currency
-        f.maximumFractionDigits = 0
-        return f.string(from: NSNumber(value: value)) ?? "$\(Int(value))"
-    }
 
     private func formatDate(_ date: Date) -> String {
         let f       = DateFormatter()

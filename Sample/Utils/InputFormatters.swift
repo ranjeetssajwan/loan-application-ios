@@ -25,11 +25,20 @@ enum CurrencyFormatter {
         return formatter.string(from: NSNumber(value: value)) ?? digits
     }
 
-
-
     static func numericValue(_ formattedText: String) -> Double {
         let digits = formattedText.filter { $0.isNumber }
         return Double(digits) ?? 0
+    }
+
+    
+    static func nzd(_ value: Double) -> String {
+        let f = NumberFormatter()
+        f.numberStyle           = .currency
+        f.locale                = Locale(identifier: "en_NZ")
+        f.currencyCode          = "NZD"
+        f.currencySymbol        = "$"
+        f.maximumFractionDigits = 0
+        return f.string(from: NSNumber(value: value)) ?? "$\(Int(value))"
     }
 }
 

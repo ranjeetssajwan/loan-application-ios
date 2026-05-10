@@ -48,8 +48,8 @@ final class ApplicationsListViewModel {
         let app = applications[index]
         return CellData(
             applicantName: app.personal.fullName,
-            loanAmount:    formatCurrency(app.financial.loanAmount),
-            annualIncome:  formatCurrency(app.financial.annualIncome),
+            loanAmount:    CurrencyFormatter.nzd(app.financial.loanAmount),
+            annualIncome:  CurrencyFormatter.nzd(app.financial.annualIncome),
             submittedDate: formatDate(app.submittedAt),
             isEligible:    app.isLoanAmountValid
         )
@@ -59,12 +59,6 @@ final class ApplicationsListViewModel {
 
  
 
-    private func formatCurrency(_ value: Double) -> String {
-        let f = NumberFormatter()
-        f.numberStyle = .currency
-        f.maximumFractionDigits = 0
-        return f.string(from: NSNumber(value: value)) ?? "$\(Int(value))"
-    }
 
     private func formatDate(_ date: Date) -> String {
         let f       = DateFormatter()

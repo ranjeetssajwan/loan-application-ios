@@ -112,12 +112,14 @@ final class FinancialInfoViewController: UIViewController {
         contentStack.addArrangedSubview(header)
         contentStack.setCustomSpacing(Spacing.xl, after: header)
 
-   
         addLabeledField(sectionLabel: "ANNUAL INCOME (NZD) *", field: incomeField, error: incomeError)
         addLabeledField(sectionLabel: "DESIRED LOAN AMOUNT (NZD) *", field: loanField, error: loanError)
         addLabeledField(sectionLabel: "IRD NUMBER *", field: irdField, error: irdError)
 
-  
+        // Privacy disclaimer beneath the IRD field
+        contentStack.addArrangedSubview(makeIRDDisclaimer())
+
+        // Eligibility bar
         setupEligibilityCard()
         contentStack.addArrangedSubview(eligibilityCard)
         contentStack.setCustomSpacing(Spacing.xl, after: eligibilityCard)
@@ -184,6 +186,45 @@ final class FinancialInfoViewController: UIViewController {
         return stack
     }
 
+    private func makeIRDDisclaimer() -> UIView {
+        let card = AppUI.card()
+        card.backgroundColor = AppColor.surface.withAlphaComponent(0.6)
+        card.layer.borderColor = AppColor.accentLight.withAlphaComponent(0.2).cgColor
+
+        // Lock icon
+        let icon = UIImageView(image: UIImage(systemName: "lock.shield"))
+        icon.tintColor = AppColor.accentLight.withAlphaComponent(0.7)
+        icon.contentMode = .scaleAspectFit
+        icon.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            icon.widthAnchor.constraint(equalToConstant: 18),
+            icon.heightAnchor.constraint(equalToConstant: 18)
+        ])
+
+        // Disclaimer text
+        let text = AppUI.label(
+            text: "We do not share your salary or IRD details with unauthorised parties.\n The data can be deleted upon request at any time.",
+            font: .systemFont(ofSize: 12),
+            color: AppColor.textSecondary,
+            lines: 0)
+
+        // Horizontal row: icon + text
+        let row = UIStackView(arrangedSubviews: [icon, text])
+        row.axis      = .horizontal
+        row.spacing   = Spacing.sm
+        row.alignment = .top
+        row.translatesAutoresizingMaskIntoConstraints = false
+
+        card.addSubview(row)
+        NSLayoutConstraint.activate([
+            row.topAnchor.constraint(equalTo: card.topAnchor, constant: Spacing.md),
+            row.leadingAnchor.constraint(equalTo: card.leadingAnchor, constant: Spacing.md),
+            row.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -Spacing.md),
+            row.bottomAnchor.constraint(equalTo: card.bottomAnchor, constant: -Spacing.md)
+        ])
+        return card
+    }
+
     // MARK: - Delegates
 
     private func setupDelegates() {
@@ -230,17 +271,17 @@ final class FinancialInfoViewController: UIViewController {
         eligibilityBar.setProgress(min(ratio, 1.0), animated: true)
 
         if loan == 0 {
-            eligibilityCaption.text = "Max eligible: \(formatCurrency(income * 0.5))"
+            eligibilityCaption.text = "Max eligible: \(CurrencyFormatter.nzd(income * 0.5))"
             eligibilityCaption.textColor = AppColor.textMuted
             eligibilityBar.progressTintColor = AppColor.accent
         } else if ratio <= 0.5 {
             let pct = Int(ratio * 100)
-            eligibilityCaption.text = "✓ Within limit (\(pct)% of income). Max: \(formatCurrency(income * 0.5))"
+            eligibilityCaption.text = "✓ Within limit (\(pct)% of income). Max: \(CurrencyFormatter.nzd(income * 0.5))"
             eligibilityCaption.textColor = AppColor.success
             eligibilityBar.progressTintColor = AppColor.success
         } else {
             let excess = loan - income * 0.5
-            eligibilityCaption.text = "✗ Exceeds limit by \(formatCurrency(excess)). Max: \(formatCurrency(income * 0.5))"
+            eligibilityCaption.text = "✗ Exceeds limit by \(CurrencyFormatter.nzd(excess)). Max: \(CurrencyFormatter.nzd(income * 0.5))"
             eligibilityCaption.textColor = AppColor.error
             eligibilityBar.progressTintColor = AppColor.error
         }
@@ -300,10 +341,6 @@ final class FinancialInfoViewController: UIViewController {
         v.layer.add(anim, forKey: "shake")
     }
 
-    private func formatCurrency(_ value: Double) -> String {
-        let f = NumberFormatter(); f.numberStyle = .currency; f.maximumFractionDigits = 0
-        return f.string(from: NSNumber(value: value)) ?? "$\(Int(value))"
-    }
 
     // MARK: - Keyboard
 
@@ -332,36 +369,30 @@ extension FinancialInfoViewController: UITextFieldDelegate {
                    shouldChangeCharactersIn range: NSRange,
                    replacementString string: String) -> Bool {
 
-        // ── IRD: digits only, no formatting ──────────────────────────────
+       
         if textField === irdField {
             let allowed = CharacterSet.decimalDigits
             return string.unicodeScalars.allSatisfy { allowed.contains($0) } || string.isEmpty
         }
 
-        // ── Income / Loan: intercept, format, set manually ───────────────
         guard textField === incomeField || textField === loanField else { return true }
 
-        // Build the new raw text as if UIKit had applied the replacement
         let currentText = textField.text ?? ""
         guard let swiftRange = Range(range, in: currentText) else { return true }
         let updatedText = currentText.replacingCharacters(in: swiftRange, with: string)
 
-        // Format the result (digits → comma-grouped)
         let formatted = CurrencyFormatter.format(updatedText)
         textField.text = formatted
 
-        // Move cursor to end (standard for numeric masked fields)
         if let endPos = textField.position(from: textField.endOfDocument, offset: 0) {
             textField.selectedTextRange = textField.textRange(from: endPos, to: endPos)
         }
 
-        // Fire editingChanged manually so textDidChange(_:) runs
         textField.sendActions(for: .editingChanged)
 
         return false   // we already applied the change
     }
 
-    /// Validate on blur so a field that was tapped-into and left empty shows its error.
     func textFieldDidEndEditing(_ textField: UITextField) {
         syncViewModel()
         updateEligibilityBar()

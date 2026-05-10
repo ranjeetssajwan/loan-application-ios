@@ -38,8 +38,8 @@ final class ReviewViewModel {
 
     var financialRows: [ReviewRow] {
         [
-            ReviewRow(label: "Annual Income",  value: formatCurrency(financial.annualIncome)),
-            ReviewRow(label: "Loan Amount",    value: formatCurrency(financial.loanAmount)),
+            ReviewRow(label: "Annual Income",  value: CurrencyFormatter.nzd(financial.annualIncome)),
+            ReviewRow(label: "Loan Amount",    value: CurrencyFormatter.nzd(financial.loanAmount)),
             ReviewRow(label: "Loan Ratio",     value: String(format: "%.1f%%", loanRatio * 100)),
             ReviewRow(label: "IRD Number",     value: maskedIRD(financial.irdNumber))
         ]
@@ -59,12 +59,6 @@ final class ReviewViewModel {
         return financial.loanAmount / financial.annualIncome
     }
 
-    private func formatCurrency(_ value: Double) -> String {
-        let formatter          = NumberFormatter()
-        formatter.numberStyle  = .currency
-        formatter.maximumFractionDigits = 0
-        return formatter.string(from: NSNumber(value: value)) ?? "$\(Int(value))"
-    }
 
     /// Shows last 2 digits, masks the rest.
     private func maskedIRD(_ ird: String) -> String {

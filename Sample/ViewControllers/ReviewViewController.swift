@@ -144,7 +144,7 @@ final class ReviewViewController: UIViewController {
         
        
         let subtitleLabel = AppUI.label(
-            text: "Complete a quick 2-step process to review and submit your loan application.",
+            text: "Complete a quick 3-step process to review and submit your loan application.",
             font: .systemFont(ofSize: 15),
             color: AppColor.textSecondary,
             lines: 0

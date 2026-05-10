@@ -21,7 +21,7 @@ final class ApplicationDetailViewController: UIViewController {
 
     private let scrollView   = UIScrollView()
     private let contentStack = UIStackView()
-    private let editButton   = AppUI.primaryButton(title: "✏️  Edit Application")
+    private let editButton   = AppUI.primaryButton(title: "Edit Application")
 
     // MARK: - Init
 
@@ -337,6 +337,12 @@ final class ApplicationDetailViewController: UIViewController {
     // MARK: - Actions
 
     @objc private func handleEdit() {
-        onEdit?(viewModel.application)
+        let alert = UIAlertController(
+            title: "Coming Soon",
+            message: "Edit Application is currently under development and will be available in a future update.",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
     }
 }
